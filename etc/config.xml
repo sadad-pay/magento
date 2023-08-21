@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <sadad_gateway>
+                <title>Sadad Payment</title>
+                <model>Sadad\Gateway\Model\SadadPayment</model>
+                <active>1</active>
+				<client_id></client_id>
+				<client_secret></client_secret>
+				<environment>test</environment>
+				<sort_order>1</sort_order>
+                <can_use_checkout>1</can_use_checkout>
+            </sadad_gateway>
+        </payment>
+    </default>
+</config>
+
