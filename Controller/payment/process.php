@@ -2,24 +2,37 @@
 namespace Sadad\Gateway\Controller\Payment;
 use Sadad\Library\SadadLibrary;
 
-class Index extends \Magento\Framework\App\Action\Action
+class Process extends \Magento\Framework\App\Action\Action
 {
 		/**
 		 * @var \Magento\Checkout\Model\Session
 		 */
 		protected $checkoutSession;
-		
+
+	    /**
+        * @var \Sadad\Gateway\Model\SadadOrderInfo
+        */
+        private $sadadOrderInfo;
+        /**
+         * @var Magento\Framework\Locale\Resolver
+         */
+        private $localeResolver;
+
         /**
          * @param \Magento\Framework\App\Action\Context $context
          * @param \Magento\Checkout\Model\Session $checkoutSession
+         * @param \Sadad\Gateway\Model\SadadOrderInfo $sadadOrderInfo
          */
         public function __construct(
         	\Magento\Framework\App\Action\Context $context,
-        	\Magento\Checkout\Model\Session $checkoutSession
+        	\Magento\Checkout\Model\Session $checkoutSession,
+            \Sadad\Gateway\Model\SadadOrderInfo $sadadOrderInfo,
+            \Magento\Framework\Locale\Resolver $localeResolver
         )
         {
-        	$this->checkoutSession = $checkoutSession;
-
+            $this->checkoutSession = $checkoutSession;
+            $this->sadadOrderInfo = $sadadOrderInfo;
+            $this->localeResolver = $localeResolver;
 
         	parent::__construct($context);
 
@@ -63,19 +76,32 @@ class Index extends \Magento\Framework\App\Action\Action
         		$amount = SadadLibrary::getKWDAmount( $currency, $amount , $env);
         	}
         	$sadadObj = new SadadLibrary( $sadadConfig );
-
+            $url      = $this->_url->getBaseUrl() . 'sadad_gateway/payment/callback/';
         	$invoice = array(
         		'ref_Number'=> "$referenceNo",
         		'amount'=> $amount,
         		'customer_Name'=> $billFirstName . ' ' . $billLastName,
         		'customer_Mobile'=> $phoneNumber,
         		'customer_Email'=> $email,
-        		'lang'=> 'en',
-        		'currency_Code'=> $currency
+        		'lang'=> $this->getLocalLanguage(),
+        		'currency_Code'=> $currency,
+                'Success_ReturnURL'=>$url,
+                'Fail_ReturnURL'=>$url
         	);					
         	$request = array('Invoices'=> array($invoice));
         	try{ 
         		$sadadInvoice = $sadadObj->createInvoice( $request, $paymentMethod->getConfigData('refresh_token') );
+
+                //save the sadad invoice information
+                $this->sadadOrderInfo->addData(
+                    [
+                            'magento_order_id'     => $referenceNo,
+                            'sadad_invoice_id'   => $sadadInvoice['InvoiceId'],
+                            'sadad_invoice_url'  => $sadadInvoice['InvoiceURL'],
+                        ]
+                );
+                $this->sadadOrderInfo->save();
+
         		header("location:" . $sadadInvoice['InvoiceURL']);
         		exit;
         	} catch (Exception $ex) {
@@ -93,5 +119,16 @@ class Index extends \Magento\Framework\App\Action\Action
         		}
 
         	}
+        }
+
+        /**
+         * Get get Local Language Code
+         *
+         * @return string
+         */
+        public function getLocalLanguage()
+        {
+            $localLangCode = $this->localeResolver->getLocale();
+            return strstr($localLangCode, '_', true);
         }
     }

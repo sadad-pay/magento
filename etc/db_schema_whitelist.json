@@ -1,0 +1,14 @@
+{
+    "sadad_order_info": {
+        "column": {
+            "id": true,
+            "magento_order_id": true,
+            "sadad_invoice_id": true,
+            "sadad_invoice_url": true,
+            "sadad_reference_id": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
