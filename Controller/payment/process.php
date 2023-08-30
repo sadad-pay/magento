@@ -55,7 +55,6 @@ class Process extends \Magento\Framework\App\Action\Action
         	$billingAddress = $orderData->getBillingAddress();
 
         	$referenceNo = $orderData->getIncrementId();
-        	$error = '';
         	$currency   = $orderData->getOrderCurrencyCode();
         	$currency = $orderData->getBaseCurrencyCode();
         	$email = $orderData->getCustomerEmail();
@@ -104,8 +103,8 @@ class Process extends \Magento\Framework\App\Action\Action
 
         		header("location:" . $sadadInvoice['InvoiceURL']);
         		exit;
-        	} catch (Exception $ex) {
-        		$this->messageManager->addError($error);
+        	} catch (\Exception $ex) {
+        		$this->messageManager->addError($ex->getMessage());
         		$_quoteFactory = $this->_objectManager->create('\Magento\Quote\Model\QuoteFactory');
         		$quote = $_quoteFactory->create()->loadByIdWithoutStore($orderData->getQuoteId());
         		if ($quote->getId()) {
