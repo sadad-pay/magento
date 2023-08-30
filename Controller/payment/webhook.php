@@ -27,6 +27,9 @@ class Webhook extends \Magento\Framework\App\Action\Action
         {
             $body       = file_get_contents("php://input");
             $webhook    = json_decode($body);
+            if(empty($webhook )){
+                die ('Error, Empty data');
+            }
             $invoiceId = $webhook->invoiceId;
             $collection = $this->sadadOrderCollection->create()->addFieldToFilter('sadad_invoice_id', $invoiceId);
             $item       = $collection->getFirstItem();
