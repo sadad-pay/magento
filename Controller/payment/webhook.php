@@ -28,7 +28,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
             $body       = file_get_contents("php://input");
             $webhook    = json_decode($body);
             if(empty($webhook )){
-                die ('Error, Empty data');
+                return 'Error, Empty data';
             }
             $invoiceId = $webhook->invoiceId;
             $collection = $this->sadadOrderCollection->create()->addFieldToFilter('sadad_invoice_id', $invoiceId);
@@ -41,7 +41,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 if(!empty($orderData)){
                     $status = $orderData->getState();
                     if ($status !== $orderData::STATE_PENDING_PAYMENT && $status !== $orderData::STATE_CANCELED) {
-                            die('order '.$referenceNo.' is already processed');
+                            return 'order '.$referenceNo.' is already processed' ;
                     }
                     $paymentMethod = $this->_objectManager->create('Sadad\Gateway\Model\SadadPayment');
                     $env = ($paymentMethod->getConfigData('environment') == 'test') ? true : false;
@@ -73,7 +73,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
                             ->addStatusHistoryComment($return_msg);
                             $orderData->save();
 
-                            die ('order '.$ref_Number.' is processed successfully');
+                            return 'order '.$ref_Number.' is processed successfully';
 
                         } else {
                             $error = "SADAD Webhook - Order #$ref_Number: " . 'Payment return: Invoice is not Paid';
@@ -83,7 +83,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
                                 $orderData->addStatusHistoryComment($error);
                             }
                             $orderData->save();
-                            die ($error);
+                            return $error;
 
                         }
                     }

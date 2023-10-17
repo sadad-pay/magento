@@ -100,9 +100,7 @@ class Process extends \Magento\Framework\App\Action\Action
                         ]
                 );
                 $this->sadadOrderInfo->save();
-
-        		header("location:" . $sadadInvoice['InvoiceURL']);
-        		exit;
+        		                return $this->_redirect($sadadInvoice['InvoiceURL']);
         	} catch (\Exception $ex) {
         		$this->messageManager->addError($ex->getMessage());
         		$_quoteFactory = $this->_objectManager->create('\Magento\Quote\Model\QuoteFactory');
@@ -114,7 +112,7 @@ class Process extends \Magento\Framework\App\Action\Action
         			$resultRedirect->setPath('checkout/cart');
         			return $resultRedirect;
         		} else {
-        			die('Ops, There is something went wong with magento qoute!');
+        			return 'Ops, There is something went wong with magento qoute!';
         		}
 
         	}
