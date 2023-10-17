@@ -1,9 +1,9 @@
 # Sadad Payment for Magento2 e-commerce
 
 ## Installation
-1. Install the Sadad Payment Magento2 module via [sadad/magento-payment](https://packagist.org/packages/sadad/magento-payment) composer.
+1. Install the Sadad Payment Magento2 module via [sadad-payment/magento2-module](https://packagist.org/packages/sadad-payment/magento2-module) composer.
 ```bash
-composer require sadad/magento-payment
+composer require sadad-payment/magento2-module
 ```
 
 2. In the command line, run the below Magento commands to enable Sadad Gateway module.
