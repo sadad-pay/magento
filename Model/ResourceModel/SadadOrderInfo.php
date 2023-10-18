@@ -7,4 +7,3 @@ class SadadOrderInfo extends \Magento\Framework\Model\ResourceModel\Db\AbstractD
 		$this->_init("sadad_order_info","id");
 	}
 }
-?>

@@ -7,4 +7,3 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 		$this->_init("Sadad\Gateway\Model\SadadOrderInfo","Sadad\Gateway\Model\ResourceModel\SadadOrderInfo");
 	}
 }
-?>
