@@ -52,16 +52,7 @@ class ConfigPlugin
 			}
 		}
 		curl_close($curl);
-		
-		$this->write_log('refreshToken: ' . $refreshToken);
 		return $refreshToken;
 	}
-	
-	public function write_log($message){
-		
-		$message = PHP_EOL . date('d-m-Y H:i:s') . ': ' . $message;
-		$fp = fopen(dirname(__FILE__) . '/debug.txt', 'a');
-		fwrite($fp, $message);
-		fclose($fp);
-	}
+
 }

@@ -70,25 +70,24 @@ class Process extends \Magento\Framework\App\Action\Action
         		'clientSecret' => $paymentMethod->getConfigData('client_secret'),
         		'isTest'       => $env
         	);
-
-        	if ( 'KWD' !== $currency ) {
-        		$amount = SadadLibrary::getKWDAmount( $currency, $amount , $env);
-        	}
-        	$sadadObj = new SadadLibrary( $sadadConfig );
-            $url      = $this->_url->getBaseUrl() . 'sadad_gateway/payment/callback/';
-        	$invoice = array(
-        		'ref_Number'=> "$referenceNo",
-        		'amount'=> $amount,
-        		'customer_Name'=> $billFirstName . ' ' . $billLastName,
-        		'customer_Mobile'=> $phoneNumber,
-        		'customer_Email'=> $email,
-        		'lang'=> $this->getLocalLanguage(),
-        		'currency_Code'=> $currency,
-                'Success_ReturnURL'=>$url,
-                'Fail_ReturnURL'=>$url
-        	);					
-        	$request = array('Invoices'=> array($invoice));
-        	try{ 
+            try{ 
+            	if ( 'KWD' !== $currency ) {
+            		$amount = SadadLibrary::getKWDAmount( $currency, $amount , $env);
+            	}
+            	$sadadObj = new SadadLibrary( $sadadConfig );
+                $url      = $this->_url->getBaseUrl() . 'sadad_gateway/payment/callback/';
+            	$invoice = array(
+            		'ref_Number'=> "$referenceNo",
+            		'amount'=> $amount,
+            		'customer_Name'=> $billFirstName . ' ' . $billLastName,
+            		'customer_Mobile'=> $phoneNumber,
+            		'customer_Email'=> $email,
+            		'lang'=> $this->getLocalLanguage(),
+            		'currency_Code'=> $currency,
+                    'Success_ReturnURL'=>$url,
+                    'Fail_ReturnURL'=>$url
+            	);					
+            	$request = array('Invoices'=> array($invoice));
         		$sadadInvoice = $sadadObj->createInvoice( $request, $paymentMethod->getConfigData('refresh_token') );
 
                 //save the sadad invoice information
@@ -100,7 +99,7 @@ class Process extends \Magento\Framework\App\Action\Action
                         ]
                 );
                 $this->sadadOrderInfo->save();
-        		                return $this->_redirect($sadadInvoice['InvoiceURL']);
+                return $this->_redirect($sadadInvoice['InvoiceURL']);
         	} catch (\Exception $ex) {
         		$this->messageManager->addError($ex->getMessage());
         		$_quoteFactory = $this->_objectManager->create('\Magento\Quote\Model\QuoteFactory');
